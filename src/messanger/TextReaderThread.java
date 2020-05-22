@@ -1,12 +1,14 @@
 package messanger;
 
 import java.io.*;
+import server_for_messanger.*;
 
 public final class TextReaderThread implements Runnable {
 	//variables
 	private BufferedReader br;
 	private Client client;
 	private String response;
+	private Server server;
 	
 	
 	//constructor creates Input Channel between Server and Client
@@ -25,6 +27,29 @@ public final class TextReaderThread implements Runnable {
 	}
 	
 	
+	
+	public TextReaderThread(Server server) {
+		this.set_server(server);
+		
+		try {
+			this.br = new BufferedReader(new InputStreamReader(this.server.get_socket().getInputStream()));
+			Thread thread = new Thread(this);
+			thread.start();
+		}
+		
+		catch(IOException ioe) {
+			System.out.println("Something went wrong in ReaderThread Constructor...");
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//methods
 	private void read() throws IOException {
 		this.response = br.readLine();
@@ -37,6 +62,14 @@ public final class TextReaderThread implements Runnable {
 	private void set_client(Client client) {
 		this.client = client;
 	}
+	
+	private void set_server(Server server) {
+		this.server = server;
+	}
+	
+	
+	
+	
 	
 	
 	
