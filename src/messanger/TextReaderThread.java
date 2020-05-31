@@ -1,72 +1,32 @@
 package messanger;
 
 import java.io.*;
-import server_for_messanger.*;
+import java.net.*;
 
 public final class TextReaderThread implements Runnable {
 	//variables
 	private BufferedReader br;
-	private Client client;
-	private String response;
-	private Server server;
+	private Socket socket;
+	private String message;
+	
+	
 	
 	
 	//constructor creates Input Channel between Server and Client
-	public TextReaderThread(Client client) {
-		this.set_client(client);
-		
-		try {
-			this.br = new BufferedReader(new InputStreamReader(this.client.get_socket().getInputStream()));
-			Thread thread = new Thread(this);
-			thread.start();
-		}
-		
-		catch(IOException ioe) {
-			System.out.println("Something went wrong in ReaderThread Constructor...");
-		}
+	public TextReaderThread(Socket socket) {
+		this.socket = socket;
+
 	}
-	
-	
-	
-	public TextReaderThread(Server server) {
-		this.set_server(server);
-		
-		try {
-			this.br = new BufferedReader(new InputStreamReader(this.server.get_socket().getInputStream()));
-			Thread thread = new Thread(this);
-			thread.start();
-		}
-		
-		catch(IOException ioe) {
-			System.out.println("Something went wrong in ReaderThread Constructor...");
-		}
-	}
-	
-	
-	
-	
-	
 	
 	
 	
 	
 	//methods
 	private void read() throws IOException {
-		this.response = br.readLine();
-		System.out.println(client.get_username() + ": " + this.response);
+		this.message = br.readLine();
+		System.out.println(": " + this.message);
+		
 	}
-	
-	
-	
-	//setters
-	private void set_client(Client client) {
-		this.client = client;
-	}
-	
-	private void set_server(Server server) {
-		this.server = server;
-	}
-	
 	
 	
 	
@@ -78,13 +38,18 @@ public final class TextReaderThread implements Runnable {
 	public void run() {
 		try {
 			
+			this.br = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			
+			System.out.println("Now I can read!");
+			
 			while(true) {
 				this.read();
 			}
 			
 		}
 		catch(IOException ioe) {
-			
+			ioe.printStackTrace();
+			System.out.println("Run Reader");
 		}
 	}
 }

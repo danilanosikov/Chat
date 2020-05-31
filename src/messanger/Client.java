@@ -1,81 +1,43 @@
 package messanger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Client {
-	//variables
-	private String server_ip;
-	private Socket socket;
-	private String username;
-	
-	
-	//Constructors
-	public Client(String server_ip) throws IOException {
-		
-		this.set_server_ip(server_ip);
-		this.connect();
-		this.set_username("Anon");
-		
-	}
-	
-	
-	public Client(String server_ip, String username) throws IOException {
-		
-		this.set_username(username);
-		this.set_server_ip(server_ip);
-		this.connect();
-		
-	}
-	
-	
-	
-	
-	//methods
-	public void connect() throws IOException{
-		
-		set_socket(new Socket(get_server_ip(),0));
-	
-	}
-	
-	public void disconnect() throws IOException {
-		this.socket.close();
-		
-	}
-	
-	
-	
-	
+	private static BufferedReader keyboard;
 
-	//getters AUTO-GEN
-	private String get_server_ip() {
-		return server_ip;
-	}
-	
-	public Socket get_socket() { //gets socket
-		return this.socket;
-	}
-	
-	public String get_username() {
-		return this.username;
-	}
-	
-	
-	
-	
-	
-	
-	
-	//setters AUTO-GEN
-	private void set_server_ip(String server_ip) {
-		this.server_ip = server_ip;
-	}
-	
-	private void set_socket(Socket socket) {
-		this.socket = socket;
-	}
-	
-	private void set_username(String username) {
-		this.username = username;
+	public static void main(String[] args) throws IOException {
+		
+		
+		try {
+			keyboard = new BufferedReader(new InputStreamReader(System.in));
+			
+			System.out.println("Enter Server IPv4: ");
+			String ip = keyboard.readLine();
+			System.out.println("IPv4: " + ip);
+			
+			
+			System.out.println("Enter port: ");
+			int port = Integer.parseInt(keyboard.readLine());
+			System.out.println("Port: " + port);
+			
+			
+			Socket socket = new Socket(ip, port);
+			System.out.println("Socket Created!");
+			
+			
+			new Thread(new TextReaderThread(socket)).start();
+			new Thread(new TextWriterThread(socket)).start();
+		}
+		catch(IOException ioe) {
+			ioe.printStackTrace();
+			System.out.println("Client");
+		}
+		
+		keyboard = new BufferedReader(new InputStreamReader(System.in));
+		String i = keyboard.readLine();
 	}
 }
